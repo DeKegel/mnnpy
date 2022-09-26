@@ -86,7 +86,7 @@ def marioniCorrect(ref_mat, targ_mat, k1=20, k2=20, fk=5, ndist=3, var_index=Non
     distances, index = cKDTree(np.take(targ, np.sort(npairs), 0)[:,var_subset]).query(
         x=targ[:, var_subset],
         k=min(fk, len(npairs)),
-        n_jobs=n_jobs)
+        workers=n_jobs)
     targ_mat = pd.DataFrame(data=targ, columns=targ_mat.columns, index=targ_mat.index)
     targ_mat += _computeTricubeWeightedAvg(re_ave_out[np.argsort(npairs)], index, distances, ndist=ndist)
     return targ_mat, mnn_pairs
@@ -105,8 +105,8 @@ def findMutualNN(data1, data2, k1, k2, n_jobs):
     Returns:
         [type]: [description]
     """
-    k_index_1 = cKDTree(data1).query(x=data2, k=k1, n_jobs=n_jobs)[1]
-    k_index_2 = cKDTree(data2).query(x=data1, k=k2, n_jobs=n_jobs)[1]
+    k_index_1 = cKDTree(data1).query(x=data2, k=k1, workers=n_jobs)[1]
+    k_index_2 = cKDTree(data2).query(x=data1, k=k2, workers=n_jobs)[1]
     mutuale = []
     for index_2, val in enumerate(k_index_1):
         for index_1 in val:
